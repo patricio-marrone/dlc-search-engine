@@ -10,30 +10,30 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class GutenbergBookReader {
-	DocumentReader reader;
-	static int entries = 0;
-	{
-		reader = new DocumentReader();
-	}
-	
-	public void readFile(File file) throws ZipException, IOException {
-		if (file.isDirectory()) {
-			File[] filesInDirectory = file.listFiles();
-			for (File fileInDirectory : filesInDirectory) {
-				this.readFile(fileInDirectory);
-			}
-		} else {
-			ZipFile zipFile = new ZipFile(file);
-			System.out.println("Reading " + file + "...");
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-		    
-		    while(entries.hasMoreElements()){
-		        ZipEntry entry = entries.nextElement();
-		        Scanner scanner = new Scanner(zipFile.getInputStream(entry));
-		        System.out.println("Entries read: " + (++GutenbergBookReader.entries));
-		        reader.readDocument(scanner);
-		    }
-		    zipFile.close();
-		}
-	}
+  DocumentReader reader;
+  static int entries = 0;
+  {
+    reader = new DocumentReader();
+  }
+
+  public void readFile(File file) throws ZipException, IOException {
+    if (file.isDirectory()) {
+      File[] filesInDirectory = file.listFiles();
+      for (File fileInDirectory : filesInDirectory) {
+        this.readFile(fileInDirectory);
+      }
+    } else {
+      ZipFile zipFile = new ZipFile(file);
+      System.out.println("Reading " + file + "...");
+      Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = entries.nextElement();
+        Scanner scanner = new Scanner(zipFile.getInputStream(entry));
+        System.out.println("Entries read: " + (++GutenbergBookReader.entries));
+        reader.readDocument(scanner);
+      }
+      zipFile.close();
+    }
+  }
 }

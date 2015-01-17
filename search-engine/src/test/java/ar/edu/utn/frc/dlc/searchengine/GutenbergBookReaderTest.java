@@ -8,18 +8,19 @@ import junit.framework.TestCase;
 
 public class GutenbergBookReaderTest extends TestCase {
 
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+  protected void tearDown() throws Exception {
+    super.tearDown();
+  }
 
-	public final void testReadFile() throws ZipException, IOException {
-		File gutenbergFolder = new File("D:\\Descargas\\guttemberg");
-		GutenbergBookReader reader = new GutenbergBookReader();
-		reader.readFile(gutenbergFolder);
-	}
+  public final void testReadFile() throws ZipException, IOException {
+    File gutenbergFolder = new File("D:\\Gutenberg examples");
+    GutenbergBookReader reader = new GutenbergBookReader();
+    reader.readFile(gutenbergFolder);
+    System.out.println("Finished!");
+  }
 
 }
