@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+
 public class DocumentReader {
 
-  public Map<String, Long> readDocument(Scanner scanner) {
-    int wordsRead = 0;
-    Map<String, Long> concordance = new HashMap<String, Long>();
+  public Concordance readDocument(Scanner scanner, Concordance concordance) throws ConcordanceTooLargeException {
+
     while (scanner.hasNext()) {
       String currentWord = scanner.next();
       if (currentWord.length() > 50) {
@@ -17,20 +17,9 @@ public class DocumentReader {
         continue;
       }
       currentWord = currentWord.toLowerCase();
-      if (concordance.containsKey(currentWord)) {
-        long incrementedCount = concordance.get(currentWord) + 1;
-        concordance.put(currentWord, incrementedCount);
-      } else {
-        concordance.put(currentWord, 1l);
-      }
-      wordsRead++;
-      if (concordance.size() > 50000) {
-        System.err.println("There's something wrong about this file. Discarding...");
-        concordance.clear();
-        break;
-      }
+      concordance.put(currentWord);
     }
-    System.out.println(wordsRead + ", Concordance size: " + concordance.size());
+    System.out.println("Words Read: " + concordance.getWordCount() + ", Concordance size: " + concordance.size());
     return concordance;
   }
 }

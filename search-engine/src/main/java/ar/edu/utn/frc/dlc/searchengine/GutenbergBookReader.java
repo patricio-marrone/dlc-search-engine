@@ -10,6 +10,8 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class GutenbergBookReader {
+	
+
   DocumentReader reader;
   static int entries = 0;
   {
@@ -31,7 +33,13 @@ public class GutenbergBookReader {
         ZipEntry entry = entries.nextElement();
         Scanner scanner = new Scanner(zipFile.getInputStream(entry));
         System.out.println("Entries read: " + (++GutenbergBookReader.entries));
-        reader.readDocument(scanner);
+        try {
+          reader.readDocument(scanner, new HashMapConcordance());
+        } catch (ConcordanceTooLargeException e) {
+          //Document is weird. Skip
+          e.printStackTrace();
+        }
+        
       }
       zipFile.close();
     }

@@ -16,20 +16,20 @@ public class DocumentReaderTest extends TestCase {
     super.tearDown();
   }
 
-  public final void testReadDocument() {
+  public final void testReadDocument() throws ConcordanceTooLargeException {
     String document = "The quick brown fox jumps over the lazy dog";
     Scanner scanner = new Scanner(document);
     DocumentReader reader = new DocumentReader();
-    Map<String, Long> concordance = reader.readDocument(scanner);
+    Concordance concordance = reader.readDocument(scanner, new HashMapConcordance());
     System.out.println(concordance);
-    assertEquals((Long) 2l, concordance.get("the"));
-    assertEquals((Long) 1l, concordance.get("quick"));
-    assertEquals((Long) 1l, concordance.get("brown"));
-    assertEquals((Long) 1l, concordance.get("fox"));
-    assertEquals((Long) 1l, concordance.get("jumps"));
-    assertEquals((Long) 1l, concordance.get("over"));
-    assertEquals((Long) 1l, concordance.get("lazy"));
-    assertEquals((Long) 1l, concordance.get("dog"));
+    assertEquals((Long) 2l, (Long)concordance.get("the"));
+    assertEquals((Long) 1l, (Long)concordance.get("quick"));
+    assertEquals((Long) 1l, (Long)concordance.get("brown"));
+    assertEquals((Long) 1l, (Long)concordance.get("fox"));
+    assertEquals((Long) 1l, (Long)concordance.get("jumps"));
+    assertEquals((Long) 1l, (Long)concordance.get("over"));
+    assertEquals((Long) 1l, (Long)concordance.get("lazy"));
+    assertEquals((Long) 1l, (Long)concordance.get("dog"));
     assertEquals(null, concordance.get("match"));
     assertEquals(null, concordance.get(""));
   }
