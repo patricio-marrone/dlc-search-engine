@@ -1,9 +1,11 @@
 package ar.edu.utn.frc.dlc.searchengine;
 
+import java.util.Iterator;
+
 import com.mongodb.BasicDBObject;
 
 public class MongoConcordance implements Concordance {
-
+  private Document document;
   private static final long CONCORDANCE_LIMIT = 50000;
   BasicDBObject concordance = new BasicDBObject();
   private long wordCount = 0;
@@ -36,4 +38,16 @@ public class MongoConcordance implements Concordance {
     return value != null ? (Long) value : null;
   }
 
+  public Iterator<ConcordanceEntry> iterator() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public Document getDocument() {
+    return document;
+  }
+
+  public void setDocument(Document document) {
+    this.document = document;
+  }
 }

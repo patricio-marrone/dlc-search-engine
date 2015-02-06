@@ -17,8 +17,11 @@ public class GutenbergBookReaderTest extends TestCase {
   }
 
   public final void testReadFile() throws ZipException, IOException {
-    File gutenbergFolder = new File("D:\\Descargas\\guttemberg\\www.gutenberg.lib.md.us\\2\\0");
-    GutenbergBookReader reader = new GutenbergBookReader();
+    String path;
+    //path = "D:\\Descargas\\guttemberg\\www.gutenberg.lib.md.us\\2\\0";
+    path = "D:\\Descargas\\guttemberg";
+    File gutenbergFolder = new File(path);
+    GutenbergBookReader reader = new GutenbergBookReader(new PersistenceHandler(), new DocumentReader());
     reader.readFile(gutenbergFolder);
     System.out.println("Finished!");
   }
