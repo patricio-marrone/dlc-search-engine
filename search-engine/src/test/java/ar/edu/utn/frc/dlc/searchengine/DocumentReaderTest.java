@@ -1,7 +1,6 @@
 package ar.edu.utn.frc.dlc.searchengine;
 
-import java.io.File;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import junit.framework.TestCase;
@@ -32,5 +31,14 @@ public class DocumentReaderTest extends TestCase {
     assertEquals((Long) 1l, (Long)concordance.get("dog"));
     assertEquals(null, concordance.get("match"));
     assertEquals(null, concordance.get(""));
+  }
+  
+  public final void testCleanAndSplit() {
+    String document = "The+-**- quick+-/--*++_brown,.fox((jumps+_-=\"'\\ over%^the*( lazy_dog";
+    DocumentReader reader = new DocumentReader();
+    
+    String[] cleanWords = reader.cleanAndSplit(document);
+    assertFalse(Arrays.asList(cleanWords).contains(""));
+    System.out.println(Arrays.toString(cleanWords));
   }
 }

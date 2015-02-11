@@ -7,18 +7,22 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 public class PersistenceHandler {
   private DB dataBase;
+  DBCollection words;
   
   public PersistenceHandler() throws UnknownHostException  {
     dataBase = connectMongo("search-engine");
+    words = dataBase.getCollection("words");
   }
   
   public void persistConcordance(Concordance concordance) throws UnknownHostException {
 
-    DBCollection words = dataBase.getCollection("words");
+    
 
      BulkWriteOperation builder = words.initializeUnorderedBulkOperation();
     for (ConcordanceEntry entry : concordance) {
@@ -38,5 +42,22 @@ public class PersistenceHandler {
     MongoClient mongoClient = new MongoClient("localhost", 27017);
     DB db = mongoClient.getDB(database);
     return db;
+  }
+
+  public void clear() {
+   words.remove(new BasicDBObject());
+  }
+  
+  public void showIndex() {
+    BasicDBObject order = new BasicDBObject();
+    order.put("frequency", -1);
+    BasicDBObject filter = new BasicDBObject();
+    filter.put("frequency", 1);
+    filter.put("_id", 0);
+    filter.put("word", 1);
+    DBCursor results = words.find().sort(order);
+    for (DBObject result : results) {
+      System.out.println(result);
+    }
   }
 }

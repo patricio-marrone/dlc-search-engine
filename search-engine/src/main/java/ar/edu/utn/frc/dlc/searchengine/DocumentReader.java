@@ -16,10 +16,20 @@ public class DocumentReader {
         System.out.println("Word was too long and was discarded: " + currentWord);
         continue;
       }
-      currentWord = currentWord.toLowerCase();
-      concordance.put(currentWord);
+      String[] words = cleanAndSplit(currentWord);
+      for (String word : words) {
+        if (!word.trim().isEmpty()) {
+          concordance.put(word);
+        }
+      }
+      
     }
     System.out.println("Words Read: " + concordance.getWordCount() + ", Concordance size: " + concordance.size());
     return concordance;
+  }
+
+  public String[] cleanAndSplit(String token) {
+    String[] cleanWords = token.toLowerCase().split("[^a-zA-Z\\d\\s]+");
+    return cleanWords;
   }
 }
