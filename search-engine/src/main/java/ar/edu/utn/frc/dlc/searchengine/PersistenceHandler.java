@@ -48,16 +48,23 @@ public class PersistenceHandler {
    words.remove(new BasicDBObject());
   }
   
-  public void showIndex() {
+  public void showIndex(String word) {
+    BasicDBObject filter = new BasicDBObject();
+    filter.put("word", word);
     BasicDBObject order = new BasicDBObject();
     order.put("frequency", -1);
-    BasicDBObject filter = new BasicDBObject();
-    filter.put("frequency", 1);
-    filter.put("_id", 0);
-    filter.put("word", 1);
-    DBCursor results = words.find().sort(order);
+    BasicDBObject keys = new BasicDBObject();
+    keys.put("frequency", 1);
+    keys.put("_id", 0);
+    keys.put("word", 1);
+    keys.put("path", 1);
+    
+    DBCursor results = words.find(filter, keys).batchSize(300);
+    int i = 0;
     for (DBObject result : results) {
-      System.out.println(result);
+      i++;
+      
+      System.out.println(i + ": " + result.get("frequency") + " " + result.get("word") );
     }
   }
 }

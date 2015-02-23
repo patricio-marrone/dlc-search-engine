@@ -25,9 +25,12 @@ public class PersistenceHandlerTest {
   @After
   public void tearDown() throws Exception {}
 
-  @Test
   public final void testShowIndex() {
-    handler.showIndex();
+//    String query = "the quick brown fox jumps over the lazy dog";
+//    String[] words = query.split(" ");
+//    for (String word : words) {
+//      handler.showIndex(word);
+//    }
   }
 
 }
