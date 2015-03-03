@@ -105,6 +105,30 @@ public class searchController extends HttpServlet {
         d4.setPath("documento4//documento4.txt");
         Document d5 = new Document();
         d5.setPath("documento5//documento5.txt");
+        Document d6 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d7 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d8 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d9 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d01 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d12 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d14 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d15 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d13 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d20 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d21 = new Document();
+        d5.setPath("documento5//documento5.txt");
+        Document d25 = new Document();
+        d5.setPath("documento5//documento5.txt");
 
         ArrayList<Document> listDoc;
         listDoc = new ArrayList<>();
@@ -112,6 +136,15 @@ public class searchController extends HttpServlet {
         listDoc.add(d4);
         listDoc.add(d1);
         listDoc.add(d2);
+        listDoc.add(d2);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
+        listDoc.add(d3);        
         listDoc.add(d3);        
 
         request.setAttribute("listDocuments", listDoc);
