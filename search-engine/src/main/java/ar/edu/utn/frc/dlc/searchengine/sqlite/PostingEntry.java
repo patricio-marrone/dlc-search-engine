@@ -6,6 +6,8 @@ public class PostingEntry {
   private Long frequency;
   private Document document;
   private Integer documentCode;
+  public boolean inAuthor;
+  public boolean inTitle;
   
   public Long getFrequency() {
     return frequency;
@@ -32,4 +34,11 @@ public class PostingEntry {
     }
     this.documentCode = documentCode;
   }
+  @Override
+  public String toString() {
+    return "PostingEntry [documentCode=" + documentCode + ", document=" + document + ", frequency="
+        + frequency + ", inTitle=" + inTitle + ", inAuthor=" + inAuthor + "]";
+  }
+  
+  
 }

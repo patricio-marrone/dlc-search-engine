@@ -30,7 +30,8 @@ public class Main {
     new Thread(daemon).start();
 
     //String path = "/media/pmarrone/Datos/Descargas/guttemberg-test";
-    String path = "/media/pmarrone/Datos/Descargas/guttemberg/www.gutenberg.lib.md.us/1/";
+    String path = "/home/pmarrone/www.gutenberg.lib.md.us/1";
+    //String path = "/media/pmarrone/Datos/Descargas/guttemberg/www.gutenberg.lib.md.us/1/0";
     File gutenbergFolder = new File(path);
     GutenbergBookReader reader = new GutenbergBookReader(extractor, new DocumentReader());
     reader.setDal(dal);

@@ -15,7 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.naming.OperationNotSupportedException;
 
 import ar.edu.utn.frc.dlc.searchengine.Document;
 
@@ -166,5 +169,10 @@ public class SqliteDAL implements DAL {
   public void commit() throws SQLException {
     System.out.println("Commiting to database...");
     connection.commit(); 
+  }
+
+  public Iterator<PostingEntry> getPostingIterator(String key) {
+    // TODO Auto-generated method stub
+    throw new RuntimeException("Not implemented");
   }
 }

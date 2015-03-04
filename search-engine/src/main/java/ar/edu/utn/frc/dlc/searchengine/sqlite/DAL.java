@@ -3,6 +3,7 @@ package ar.edu.utn.frc.dlc.searchengine.sqlite;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 
 import ar.edu.utn.frc.dlc.searchengine.Document;
@@ -25,5 +26,7 @@ public interface DAL {
       throws SQLException, IOException;
 
   public abstract void commit() throws SQLException;
+
+  public abstract Iterator<PostingEntry> getPostingIterator(String key);
 
 }

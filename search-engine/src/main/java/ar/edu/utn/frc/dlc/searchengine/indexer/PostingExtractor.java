@@ -26,6 +26,8 @@ public class PostingExtractor {
       PostingEntry postingEntry = new PostingEntry();
       postingEntry.setDocument(concordanceDocument);
       postingEntry.setFrequency(entry.getFrequency());
+      postingEntry.inAuthor = entry.inAuthor;
+      postingEntry.inTitle = entry.inTitle;
       dictionary.addPosting(entry.getWord(), postingEntry); 
     }
   }

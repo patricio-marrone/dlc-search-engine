@@ -1,5 +1,6 @@
 package ar.edu.utn.frc.dlc.searchengine;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,14 +11,22 @@ import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkUpdateRequestBuilder;
 import com.mongodb.BulkWriteOperation;
 import com.mongodb.BulkWriteRequestBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import ar.edu.utn.frc.dlc.searchengine.sqlite.DAL;
@@ -41,6 +50,7 @@ public class MongoDAL implements DAL {
       dataBase = mongoClient.getDB("search-engine");
       words = dataBase.getCollection("words");
       documents = dataBase.getCollection("documents");
+      this.commit();
     } catch (UnknownHostException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -66,7 +76,8 @@ public class MongoDAL implements DAL {
     BasicDBObject mongoDocument = new BasicDBObject();
     document.setId(++lastDocument);
     mongoDocument.put("url", document.getPath());
-    mongoDocument.put("title", document.getPath());
+    mongoDocument.put("title", document.getTitle());
+    mongoDocument.put("author", document.getAuthor());
     mongoDocument.put("code", document.getId());
     documentBuilder.insert(mongoDocument);
     documentHasOperations = true;
@@ -76,7 +87,7 @@ public class MongoDAL implements DAL {
   public synchronized void flushPostings(Word word, List<PostingEntry> postingEntries) throws SQLException,
       IOException {
     BasicDBObject posting = new BasicDBObject();
-    //posting.put("word", word.getWord());
+
     wordHasOperations = true;
     byte[] postingBytes = serializePostings(postingEntries);
     posting.put("$set", new BasicDBObject("word", word.getWord()));
@@ -84,6 +95,10 @@ public class MongoDAL implements DAL {
     posting.put("$push", new BasicDBObject("postings", postingBytes));
     BulkWriteRequestBuilder requestBuilder = wordBuilder.find(new BasicDBObject("word", word.getWord()));
     requestBuilder.upsert().update(posting);
+//    posting.put("word", word.getWord());
+//    posting.put("count", word.getCount());
+//    posting.put("postings", postingBytes);
+//    wordBuilder.insert(posting);
   }
 
   private byte[] serializePostings(List<PostingEntry> entries) throws IOException {
@@ -92,21 +107,35 @@ public class MongoDAL implements DAL {
     for (PostingEntry entry : entries) {
       stream.writeInt(entry.getDocumentCode());
       stream.writeLong(entry.getFrequency());
+      int flags = 0x00;
+      if (entry.inTitle) {
+        flags = (flags | 0x01);
+      }
+      if (entry.inAuthor) {
+        flags = (flags | 0x02);
+      }
+      stream.writeByte(flags);
     }
     return byteArrayStream.toByteArray();
   }
 
-  private List<PostingEntry> deserializePostings(Blob postingBytes) throws SQLException,
-      IOException {
+  private List<PostingEntry> deserializePostings(byte[] postingBytes) throws IOException {
     List<PostingEntry> retrievedPostings = new ArrayList<PostingEntry>(50);
-    DataInputStream stream = new DataInputStream(postingBytes.getBinaryStream());
+    DataInputStream stream = new DataInputStream(new ByteArrayInputStream(postingBytes));
     while (true) {
       try {
         int documentCode = stream.readInt();
         long frequency = stream.readLong();
+        byte flags = stream.readByte();
         PostingEntry retrievedEntry = new PostingEntry();
         retrievedEntry.setDocumentCode(documentCode);
         retrievedEntry.setFrequency(frequency);
+        if ((flags & 1) == 1) {
+          retrievedEntry.inTitle = true;
+        }
+        if ((flags & 2) == 1) {
+          retrievedEntry.inAuthor = true;
+        }
         retrievedPostings.add(retrievedEntry);
       } catch (EOFException e) {
         break;
@@ -115,8 +144,8 @@ public class MongoDAL implements DAL {
     return retrievedPostings;
   }
 
-  public void commit() throws SQLException {
-    //System.out.println("Committing! ");
+  public void commit() {
+    System.out.println("Committing! ");
     BulkWriteOperation oldWordBuilder;
     BulkWriteOperation oldDocumentBuilder;
     boolean executeWords;
@@ -138,5 +167,29 @@ public class MongoDAL implements DAL {
       oldDocumentBuilder.execute();
     }
     
+  }
+
+  public Iterator<PostingEntry> getPostingIterator(String key) {
+    DBObject query = new BasicDBObject("word", key);
+    DBObject fields = new BasicDBObject("postings", 1);
+    fields.put( "_id", 0);
+    DBCursor cursor = words.find(query, fields);
+    List<PostingEntry> entries = new ArrayList<PostingEntry>();
+    while (cursor.hasNext()) {
+      DBObject result = cursor.next();
+      BasicDBList postings = (BasicDBList) result.get("postings");
+      for (Object o : postings) {
+          //System.out.println(o);
+          byte[] postingBytes = (byte[]) o;
+          try {
+            entries.addAll(this.deserializePostings(postingBytes));
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+      }
+      System.out.println(entries.toString());
+    }
+    return null;
   }
 }

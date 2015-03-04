@@ -6,9 +6,11 @@ public class Document implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private String path;
 	private int id;
+	private String author;
+	private String title;
 	
 	public String getPath() {
 		return path;
@@ -50,4 +52,27 @@ public class Document implements Serializable {
   public void setId(int id) {
     this.id = id;
   }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  @Override
+  public String toString() {
+    return "[path=" + path + ", author=" + author + ", title=" + title + "]";
+  }
+  
+  
 }

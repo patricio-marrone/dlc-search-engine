@@ -5,14 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+
 
 
 
@@ -27,7 +32,7 @@ public class GutenbergBookReader {
   private ObjectInputStream ois;
   private DAL dal;
   static int entries = 0;
-
+  private static Pattern urlPattern = Pattern.compile(".*(www\\.gutenberg\\.lib\\.md\\.us.*)\\.zip");
   
   public DAL getDal() {
     return dal;
@@ -73,13 +78,14 @@ public class GutenbergBookReader {
         }
       }
     } else {
-      System.out.println("Reading " + file + "...");
       String fileName = file.getName();
-      boolean isConcordance = fileName.endsWith(".con");
+      
       boolean isZipFile = fileName.endsWith(".zip");
       if (!isZipFile) {
+        //System.out.println("Ignoring " + file + "...");
         return;
       }
+      System.out.println("Reading " + file + "...");
       File concordanceFile = new File(file.getAbsolutePath() + ".con");
       if (concordanceFile.exists()) {
         try {
@@ -99,6 +105,13 @@ public class GutenbergBookReader {
             // TODO Auto-generated catch block
             e.printStackTrace();
           }
+          System.out.println("Document read from concordance file: " + existingConcordance.getDocument());
+          return;
+        } catch (InvalidClassException e) {
+          System.out.println("Invalid concordance file found. Deleting.");
+          concordanceFile.delete();
+        } catch (LanguageNotSupportedException e) {
+          System.out.println("The document language is unsupported: " + e.getMessage() + ". Skipping...");
           return;
         } catch (Exception e) {
           e.printStackTrace();
@@ -117,17 +130,26 @@ public class GutenbergBookReader {
         Concordance concordance;
         try {
           concordance = reader.readDocument(scanner, new HashMapConcordance());
-          Document document = new Document();
-          document.setPath(file.getAbsolutePath());
+          Document document = concordance.getDocument();
+          
+          Matcher urlMatcher = urlPattern.matcher(file.getAbsolutePath());
+          if (urlMatcher.find()) {    
+            String url = urlMatcher.group(1) + ".txt";
+            document.setPath(url);
+          }
+
           if (dal != null) {
             dal.addDocument(document);
           }
-          concordance.setDocument(document);
+          System.out.println("Document read from zip file: " + document);
           if (handler != null) {
             handler.addConcordance(concordance);
           }
+          
+          
           ObjectOutputStream concordanceFileStream =
               new ObjectOutputStream(new FileOutputStream(concordanceFile));
+          System.out.println("Writing new concordance file: " + concordanceFile);
           concordanceFileStream.writeObject(concordance);
           concordanceFileStream.flush();
           concordanceFileStream.close();

@@ -19,21 +19,27 @@ public class WordPersistenceDaemon implements Runnable {
   }
 
   public void run() {
+    
+    int operations = 0;
     while (oneMoreTime) {
       oneMoreTime = !dictionary.isFinished();
       System.out.println("Word Persistence daemon iteration : " + iteration++);
       Collection<Word> words = dictionary.getWords();
+      int size = words.size();
       int i = 0;
       for (Word word : words) { 
         try {
           if (word.hasUpdates()) {
             i++;
+            operations++;
             List<PostingEntry> postingEntries = word.flushEntries();
             this.dal.flushPostings(word, postingEntries);
+            if (i % 1000 == 0) {
+              System.out.println("Processing: " + i + " of " + size);
+              dal.commit();
+              System.out.println("Committed!");
+            }
           };
-          if (i % 300 == 0) {
-            dal.commit();
-          }
         } catch (IOException e) {
           e.printStackTrace();
         } catch (SQLException e) {
@@ -41,11 +47,12 @@ public class WordPersistenceDaemon implements Runnable {
         }
       }
       try {
+        System.out.println("Committing...");
         dal.commit();
-        Thread.sleep(10000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+         Thread.sleep(10000);
       } catch (SQLException e) {
+        e.printStackTrace();
+      } catch (InterruptedException e) {
         e.printStackTrace();
       } 
     }
