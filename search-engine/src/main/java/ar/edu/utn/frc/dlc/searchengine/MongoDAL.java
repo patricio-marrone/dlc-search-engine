@@ -13,8 +13,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +44,7 @@ public class MongoDAL implements DAL {
   BulkWriteOperation documentBuilder;
   private boolean documentHasOperations = false;
   private boolean wordHasOperations = false;
+  private static Map<Integer, Document> documentMap = null;
 
   public synchronized Connection open() {
     MongoClient mongoClient;
@@ -136,6 +139,10 @@ public class MongoDAL implements DAL {
         if ((flags & 2) == 1) {
           retrievedEntry.inAuthor = true;
         }
+        if (MongoDAL.documentMap == null) {
+          this.getDocumentMap();
+        }
+        retrievedEntry.setDocument(documentMap.get(documentCode));
         retrievedPostings.add(retrievedEntry);
       } catch (EOFException e) {
         break;
@@ -179,17 +186,45 @@ public class MongoDAL implements DAL {
       DBObject result = cursor.next();
       BasicDBList postings = (BasicDBList) result.get("postings");
       for (Object o : postings) {
-          //System.out.println(o);
           byte[] postingBytes = (byte[]) o;
           try {
             entries.addAll(this.deserializePostings(postingBytes));
           } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
           }
       }
-      System.out.println(entries.toString());
     }
-    return null;
+    return entries.iterator();
+  }
+
+  public Map<Integer, Document> getDocumentMap() {
+    if (MongoDAL.documentMap != null) {
+      return documentMap;
+    }
+    
+    DBCursor cursor = documents.find();
+    documentMap = new HashMap<Integer, Document>(cursor.size());
+
+    while (cursor.hasNext()) {
+      DBObject result = cursor.next();
+      Document document = new Document();
+      document.setId((Integer)result.get("code"));
+      document.setPath((String) result.get("url"));
+      document.setAuthor((String) result.get("author"));
+      document.setTitle((String) result.get("title"));
+      documentMap.put(document.getId(), document);
+    }
+    return documentMap;
+  }
+
+  public Integer getWordPostingCount(String key) {
+    DBObject query = new BasicDBObject("word", key);
+    DBObject fields = new BasicDBObject("count", 1);
+    DBCursor cursor = words.find(query, fields);
+    if (cursor.hasNext()) {
+      DBObject result = cursor.next();
+      return (Integer) result.get("count");
+    }
+    return 0;
   }
 }

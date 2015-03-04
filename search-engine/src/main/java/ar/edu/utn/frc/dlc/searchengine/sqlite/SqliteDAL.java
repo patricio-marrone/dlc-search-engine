@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -174,5 +175,13 @@ public class SqliteDAL implements DAL {
   public Iterator<PostingEntry> getPostingIterator(String key) {
     // TODO Auto-generated method stub
     throw new RuntimeException("Not implemented");
+  }
+
+  public Map<Integer, Document> getDocumentMap() {
+    throw new RuntimeException("Not implemented");
+  }
+
+  public Integer getWordPostingCount(String key) {
+    return null;
   }
 }

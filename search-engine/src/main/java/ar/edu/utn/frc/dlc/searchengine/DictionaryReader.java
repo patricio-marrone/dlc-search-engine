@@ -22,11 +22,11 @@ public class DictionaryReader {
     return dal.getPostingIterator(key);
   }
   
-  public Long getWordPostingCount(String key) {
-    return 0l;
+  public Integer getWordPostingCount(String key) {
+    return dal.getWordPostingCount(key);
   }
   
   public Map<Integer, Document> getDocumentMap() {
-   return null;
+   return dal.getDocumentMap();
   }
 }

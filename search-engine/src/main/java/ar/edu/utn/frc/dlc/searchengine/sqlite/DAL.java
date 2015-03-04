@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import ar.edu.utn.frc.dlc.searchengine.Document;
 
@@ -28,5 +29,9 @@ public interface DAL {
   public abstract void commit() throws SQLException;
 
   public abstract Iterator<PostingEntry> getPostingIterator(String key);
+
+  public abstract Map<Integer, Document> getDocumentMap();
+
+  public abstract Integer getWordPostingCount(String key);
 
 }
