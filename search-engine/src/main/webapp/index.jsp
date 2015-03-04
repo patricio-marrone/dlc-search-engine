@@ -30,14 +30,13 @@
         <div class="center">
             <h3>Wellcome to Search Engine v1.0</h3>
         </div>
-
         <div id="input-search" class="form center">
             <form  class="registro" method="POST" action="<%=LOCAL_PATH%>" autocomplete="on">
                 <h5>Enter your search</h5> 
                 <p> 
                     <label for="text-find" class="text "></label>
-                    <input type="text" name="text-find"  placeholder="Insert your search"/>
-                    <INPUT TYPE="BUTTON" VALUE="Button 1" class="btn btn-xs btn-primary fa fa-user">
+                    <input type="text" name="text-find" class="input-xxlarge" placeholder="Insert your search" required/>
+                    <INPUT type="submit" VALUE="Search" class="btn btn-sm btn-primary">
                 </p>
             </form>
         </div>

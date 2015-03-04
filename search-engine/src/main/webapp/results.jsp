@@ -43,9 +43,9 @@
                 <h5>Enter your search</h5> 
                 <p> 
                     <label for="text-find" class="text "></label>
-                    <input type="text" name="text-find"  placeholder="Insert your search" value="<%=request.getAttribute("searchText")%>"                                           
-                           />
-                    <INPUT type="submit" VALUE="Search" class="btn btn-bold btn-primary fa fa-user">
+                    <input type="text" name="text-find"  placeholder="Insert your search" class="input-xxlarge" 
+                           value="<%=request.getAttribute("searchText")%>"/>
+                    <INPUT type="submit" VALUE="Search" class="btn btn-sm btn-primary">
                 </p>
             </form>
         </div>
