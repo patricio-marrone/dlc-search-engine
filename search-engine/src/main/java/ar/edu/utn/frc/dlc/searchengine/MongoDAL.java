@@ -227,4 +227,11 @@ public class MongoDAL implements DAL {
     }
     return 0;
   }
+
+  public Integer getDocumentCount() {
+    if (MongoDAL.documentMap == null) {
+      this.getDocumentMap();
+    }
+    return documentMap.size();
+  }
 }

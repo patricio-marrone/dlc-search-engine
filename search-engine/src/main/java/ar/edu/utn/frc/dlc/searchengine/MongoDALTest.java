@@ -14,7 +14,7 @@ public class MongoDALTest {
     DictionaryReader reader = new DictionaryReader();
     reader.setDal(dal);
     reader.getDocumentMap();
-    Iterator<PostingEntry> resultIterator = reader.getPostingIterator("ditchfield");
+    Iterator<PostingEntry> resultIterator = reader.getPostingIterator("the");
     while (resultIterator.hasNext()) {
       PostingEntry entry = resultIterator.next();
       System.out.println("Result: " + entry.getDocument().getTitle() + ", Freq: " + entry.getFrequency() + ", Author: " + entry.getDocument().getAuthor() + ", url: " + entry.getDocument().getPath());
@@ -25,5 +25,6 @@ public class MongoDALTest {
     System.out.println("dog: " + reader.getWordPostingCount("dog"));
     System.out.println("amsterdam: " + reader.getWordPostingCount("amsterdam"));
     System.out.println("hyperspace: " + reader.getWordPostingCount("hyperspace"));
+    System.out.println("Total documents: " + reader.getDocumentCount());
   }
 }

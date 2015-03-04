@@ -26,6 +26,10 @@ public class DictionaryReader {
     return dal.getWordPostingCount(key);
   }
   
+  public Integer getDocumentCount() {
+    return dal.getDocumentCount();
+  }
+  
   public Map<Integer, Document> getDocumentMap() {
    return dal.getDocumentMap();
   }

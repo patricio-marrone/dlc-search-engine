@@ -184,4 +184,9 @@ public class SqliteDAL implements DAL {
   public Integer getWordPostingCount(String key) {
     return null;
   }
+
+  public Integer getDocumentCount() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

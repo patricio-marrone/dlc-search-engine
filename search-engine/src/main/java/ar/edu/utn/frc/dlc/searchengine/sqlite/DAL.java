@@ -34,4 +34,6 @@ public interface DAL {
 
   public abstract Integer getWordPostingCount(String key);
 
+  public abstract Integer getDocumentCount();
+
 }
