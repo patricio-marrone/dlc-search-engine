@@ -31,6 +31,7 @@ public class GutenbergBookReader {
   private DocumentReader reader;
   private ObjectInputStream ois;
   private DAL dal;
+  private int delay;
   static int entries = 0;
   private static Pattern urlPattern = Pattern.compile(".*(www\\.gutenberg\\.lib\\.md\\.us.*)\\.zip");
   
@@ -65,7 +66,7 @@ public class GutenbergBookReader {
   }
 
   public void readFile(File file) throws ZipException, IOException, SQLException {
-    if (entries > 20000) {
+    if (entries > 100000 || delay < 0) {
       return;
     }
     if (file.isDirectory()) {
@@ -100,7 +101,7 @@ public class GutenbergBookReader {
             handler.addConcordance(existingConcordance);
           }
           try {
-            Thread.sleep(500);
+            Thread.sleep(delay);
           } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -146,6 +147,12 @@ public class GutenbergBookReader {
             handler.addConcordance(concordance);
           }
           
+          try {
+            Thread.sleep(delay);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          
           
           ObjectOutputStream concordanceFileStream =
               new ObjectOutputStream(new FileOutputStream(concordanceFile));
@@ -162,5 +169,9 @@ public class GutenbergBookReader {
       zipFile.close();
     }
 
+  }
+
+  public void setDelay(int delay) {
+    this.delay = delay;
   }
 }

@@ -50,7 +50,7 @@ public class MongoDAL implements DAL {
     MongoClient mongoClient;
     try {
       mongoClient = new MongoClient("localhost", 27017);
-      dataBase = mongoClient.getDB("search-engine");
+      dataBase = mongoClient.getDB("search-engine-test");
       words = dataBase.getCollection("words");
       documents = dataBase.getCollection("documents");
       this.commit();
@@ -93,15 +93,17 @@ public class MongoDAL implements DAL {
 
     wordHasOperations = true;
     byte[] postingBytes = serializePostings(postingEntries);
-    posting.put("$set", new BasicDBObject("word", word.getWord()));
-    posting.put("$set", new BasicDBObject("count", word.getCount()));
-    posting.put("$push", new BasicDBObject("postings", postingBytes));
-    BulkWriteRequestBuilder requestBuilder = wordBuilder.find(new BasicDBObject("word", word.getWord()));
-    requestBuilder.upsert().update(posting);
-//    posting.put("word", word.getWord());
-//    posting.put("count", word.getCount());
-//    posting.put("postings", postingBytes);
-//    wordBuilder.insert(posting);
+    
+//    posting.put("$set", new BasicDBObject("word", word.getWord()));
+//    posting.put("$set", new BasicDBObject("count", word.getCount()));
+//    posting.put("$push", new BasicDBObject("postings", postingBytes));
+//    BulkWriteRequestBuilder requestBuilder = wordBuilder.find(new BasicDBObject("word", word.getWord()));
+//    requestBuilder.upsert().update(posting);
+    
+      posting.put("word", word.getWord());
+      posting.put("count", word.getCount());
+      posting.put("postings", postingBytes);
+      wordBuilder.insert(posting);
   }
 
   private byte[] serializePostings(List<PostingEntry> entries) throws IOException {
@@ -173,7 +175,6 @@ public class MongoDAL implements DAL {
     if (oldDocumentBuilder != null && executeDocuments) {
       oldDocumentBuilder.execute();
     }
-    
   }
 
   public Iterator<PostingEntry> getPostingIterator(String key) {
