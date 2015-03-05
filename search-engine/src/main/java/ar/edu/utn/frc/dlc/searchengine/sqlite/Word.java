@@ -64,6 +64,9 @@ public class Word {
   }
 
   public Iterator<PostingEntry> getPostingIterator() {
+    if (entries == null) {
+      return new ArrayList<PostingEntry>().iterator();
+    }
     return entries.iterator();
   }
 

@@ -97,4 +97,13 @@ public class Dictionary implements Serializable {
   public synchronized boolean isFinished() {
     return this.finished;
   }
+  
+  public Integer getCount(String key) {
+    Word word = wordCounts.get(key);
+    if(word == null){
+        return 0;
+    }
+    return word.getCount();
+  }
+  
 }
